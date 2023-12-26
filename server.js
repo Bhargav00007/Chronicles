@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const path = require("path")
-const port = 3000;
+require("dotenv").config()
 
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://BhargavPattanayak:bhargav00007@cluster0.npaegrt.mongodb.net/chronicles", { useNewUrlParser: true, useUnifiedTopology: true });
@@ -88,7 +88,7 @@ app.post("/pass",(req,res)=>{
     }
 })
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running at http://localhost:${process.env.PORT}`);
 });
 
