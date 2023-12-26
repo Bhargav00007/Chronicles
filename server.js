@@ -4,6 +4,18 @@ const app = express();
 const path = require("path")
 require("dotenv").config()
 
+var currentdate = new Date(); 
+var datetime = "Last Sync: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+
+
+
+
+
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://BhargavPattanayak:bhargav00007@cluster0.npaegrt.mongodb.net/chronicles", { useNewUrlParser: true, useUnifiedTopology: true });
 // Define MongoDB Schema and Model for News
@@ -40,10 +52,10 @@ app.get('/', (req, res) => {
 // get pussy put delete
 // Example route for uploading news
 app.post('/api/upload', async (req, res) => {
-    const { title, content, image } = req.body;   
-    
+    const { title, content, image} = req.body;   
+    let time = new Date().toLocaleString();
     try {
-        const newsItem = new News({ title, content, image });
+        const newsItem = new News({ title, content, image, time });
         await newsItem.save();
         res.redirect("/")
     } catch (error) {
