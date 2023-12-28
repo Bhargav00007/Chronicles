@@ -12,12 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(newsList => {
                 // Iterate through the news list and display each item
                 newsList.forEach(newsItem => {
+                    
 
                     const newsDiv = document.createElement('div');
                     newsDiv.className = "container";
                     newsDiv.innerHTML = `
                         <div class="row">
-                          <div class="col-sm-4 col-md-11 col-lg-12" style="text-align: center; border:2px solid black; padding:10px; border-radius: 30px; margin:10px; background-color: rgb(222, 240, 248); box-shadow: 0px 5px 10px rgba(0, 0, 0, 1);" >
+                          <div class="col-sm-4 col-md-11 col-lg-12" style="text-align: center; border:1px solid black; padding:10px; border-radius: 20px; margin:10px; background-color: lightcyan; ">
                             <div class="news-container post1" data-post-id="0">
                             <h3><b>${newsItem.title}</b></h3>
                             <p>${newsItem.content}</p>
