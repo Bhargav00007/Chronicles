@@ -23,7 +23,9 @@ const newsSchema = new mongoose.Schema({
     title: String,
     content: String,
     image: String,
-    time: String
+    time: String,
+    like: { type: Number, default:'0' },
+    dislike: { type: Number, default:'0' }
     
 });
 const News = mongoose.model('News', newsSchema);
@@ -41,21 +43,51 @@ app.use(express.urlencoded({ extended:true
 }))
 
 
+//usable variables
+let likeRecord = []
+
+
 // Define routes for handling news operations
 app.get("/upload" , (req,res) =>{
     res.sendFile(path.join(__dirname,"secret.html"))
 })
+
+
 // Example route for retrieving news
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+   likeRecord={}
+   let rec = await News.find()
+    // console.log("rec",rec[0])
+   rec.forEach(article=>{
+    // console.log("article",article)
+    likeRecord["lik"+JSON.stringify(article._id).slice(1,JSON.stringify(article._id).length-1)] = article.like.toString();
+    likeRecord["dis"+JSON.stringify(article._id).slice(1,JSON.stringify(article._id).length-1)] = article.dislike.toString();
+
+   })
+   
    res.sendFile(path.join(__dirname,"news.html"))
 });
+
+
 // get pussy put delete
+
+app.get("/api/upload", async (req,res) => {
+    const newsList = await News.find();
+    // console.log(newsList)
+    res.json(newsList);
+})
+
+
+
+//------------------------------------------------post----------------------------------------------------
+
 // Example route for uploading news
 app.post('/api/upload', async (req, res) => {
     const { title, content, image} = req.body;   
     let time = new Date().toLocaleString();
     try {
-        const newsItem = new News({ title, content, image, time });
+        let newsItem = new News({ title, content, image, time });
+        console.log(typeof newsItem,"\n",newsItem)
         await newsItem.save();
         res.redirect("/")
     } catch (error) {
@@ -63,10 +95,57 @@ app.post('/api/upload', async (req, res) => {
     }
 });
 
-app.get("/api/upload", async (req,res) => {
-    const newsList = await News.find();
-    res.json(newsList);
+//----------------STATIC POSTS ONE TIME---------------------
+     function dyn(){
+    //each static thingy
+    let staticTitles = ["Sports!", "2nd year's Internships!","TAM VX (Group discussion)",
+   "Successfully Conducted Nirvana Fest by Street Cause", "St martin's New Creation",
+   "Website Launching Soon!!!"] 
+    staticTitles.forEach(async post=>{
+
+        let time = new Date().toLocaleString();
+        let check = await News.find({title:post})
+        if (check.length==0){    
+            let newsItem = new News({ title:post});
+            await newsItem.save();
+        }
+    }) 
+
+}
+
+dyn()
+
+
+app.post("/like",(req,res)=>{
+    // console.log("UPDATEREC",req.body) 
+    // console.log("LIKEREC",likeRecord)
+
+    // comparing each object, if we find difference we update db
+    Object.keys(req.body).forEach(async thumb=>{
+        // console.log("req:",req.body[thumb],"saved:",likeRecord[thumb])
+        if (req.body[thumb] != likeRecord[thumb]){
+            // console.log(thumb.slice(3)) //id
+           //lik
+            if(thumb.slice(0,3)=="lik"){
+                // console.log("Like Update Mode")
+                let update = await News.findOneAndUpdate({_id:thumb.slice(3)},{like:req.body[thumb]});
+                // console.log("from DB",update)
+                likeRecord[thumb]=req.body[thumb]
+            }
+            else if(thumb.slice(0,3)=="dis"){
+                // console.log("Dislike Update Mode")
+                
+                let update = await News.findOneAndUpdate({_id:thumb.slice(3)},{dislike:req.body[thumb]});
+                // console.log("from DB",update)
+                likeRecord[thumb]=req.body[thumb]
+            }
+            
+        }
+
+    })
+    res.status(204).send()
 })
+
 
 
 app.post("/delete", async (req,res) => {   
@@ -84,9 +163,6 @@ app.post("/delete", async (req,res) => {
 })
 
 
-app.post("/like",(req,res)=>{
-
-})
 
 app.post("/pass",(req,res)=>{
     let pass = "undercook" 
@@ -103,4 +179,3 @@ app.post("/pass",(req,res)=>{
 app.listen(process.env.PORT, () => {
     console.log(`Server is running at http://localhost:${process.env.PORT}`);
 });
-
