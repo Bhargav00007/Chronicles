@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="news-container post1" data-post-id="0">
                             <h3><b>${newsItem.title}</b></h3>
                             <p>${newsItem.content}</p>
-                            <img src="/${newsItem.image}" alt="${" "} " style="width:500px; height:500px;">
+                            <img src="/${newsItem.image}" alt="${" "} " style="width:50%;">
                             <p><b>${newsItem.time}</p>
                             
                             <div class="post-ratings-container">
