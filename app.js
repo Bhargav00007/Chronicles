@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             
                             <div class="post-ratings-container">
                                 <div class="post-rating">
-                                    <span class="post-rating-button material-icons">thumb_up</span>
+                                    <span class="post-rating-button material-icons" onclick="playSound()">thumb_up</span>
                                     <span class="post-rating-count"><input name="${'lik'+newsItem._id}" type="text" value=${newsItem.like} readonly></span>
                                 </div>
                                 <div class="post-rating">
-                                    <span class="post-rating-button material-icons">thumb_down</span>
+                                    <span class="post-rating-button material-icons" onclick="playSound()">thumb_down</span>
                                     <span class="post-rating-count"><input name="${'dis'+newsItem._id}" type="text" value=${newsItem.dislike}  readonly></span>
                                 </div>
                             </div>
